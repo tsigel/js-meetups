@@ -1,77 +1,91 @@
 <html>
-    <head>
 
-        <style>
-            
-            #slider {
-                position: relative;
-                width: 500px;
-                height: 200px;
-            }
+<head>
 
-            #target {
-                position: relative;
-                width: 500px;
-                height: 200px;
-            }
+    <style>
+        #slider {
+            position: relative;
+            width: 500px;
+            height: 200px;
+        }
 
-            .arrow {
-                z-index: 1000000000000;
-                width: 10px;
-                height: 10px;
-                position: absolute;
-                margin-top: -5px;
-                top: 50%;
-                background-color: blueviolet;
-            }
+        #target {
+            position: relative;
+            width: 500px;
+            height: 200px;
+        }
 
-            #left {
-                left: 0;
-            }
-            #right {
-                right: 0;
-            }
+        .arrow {
+            z-index: 1000000000000;
+            width: 10px;
+            height: 10px;
+            position: absolute;
+            margin-top: -5px;
+            top: 50%;
+            background-color: blueviolet;
+        }
 
-            #playList {
-                display: none;
-            }
+        #left {
+            left: 0;
+        }
 
-            .slide {
-                width: 100%;
-                height: 100%;
-                position: absolute;
-                left: 0;
-                top: 0;
-                background-color: yellow;
-            }
+        #right {
+            right: 0;
+        }
 
-        </style>
+        #playList {
+            display: none;
+        }
 
-    </head>
-    <body>
-        <script src="./Slider.js"></script>
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: yellow;
+        }
+    </style>
 
-        <div id="slider">
-            <div id="left" class="arrow"></div>
-            <div id="right" class="arrow"></div>
+</head>
 
-            <div id="target">
+<body>
+    <script src="./Slider.js"></script>
+    <script src="./Animation.js"></script>
 
-            </div>
+    <div id="slider">
+        <div id="left" class="arrow"></div>
+        <div id="right" class="arrow"></div>
 
-            <div id="playList">
-                <div style="background-color: yellow;" class="slide"></div>
-                <div style="background-color: green;" class="slide"></div>
-                <div style="background-color: red;" class="slide"></div>
-                <div style="background-color: blue;" class="slide"></div>
-                <div style="background-color: gold;" class="slide"></div>
-            </div>
+        <div id="target">
+
         </div>
 
-        <script>
-            const slider = document.querySelector('#slider');
-            // Как не надо делать!!!
-            new Slider(slider, left, right, target, playList);
-        </script>
-    </body>
+        <div id="playList">
+            <div style="background-color: yellow;" class="slide"></div>
+            <div style="background-color: green;" class="slide"></div>
+            <div style="background-color: red;" class="slide"></div>
+            <div style="background-color: blue;" class="slide"></div>
+            <div style="background-color: gold;" class="slide"></div>
+        </div>
+    </div>
+
+    <script>
+        const slider = document.querySelector('#slider');
+        // Как не надо делать!!!
+        new Slider(slider, left, right, target, playList);
+
+
+        const animation = AnimationSingleton.Instance;
+        animation.animate(300, progress => {
+            slider.style.top = progress * 100 + 'px'
+        }, () => {
+            const initTop = slider.style.top.slice(0, -2);
+            animation.animate(300, progress => {
+                slider.style.top = initTop - progress * 100 + 'px'
+            }).then(() => console.log('End'))
+        });
+    </script>
+</body>
+
 </html>
