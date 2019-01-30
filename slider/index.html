@@ -73,7 +73,7 @@
             const slider = document.querySelector('#slider');
             // Как не надо делать!!!
             new Slider(slider, left, right, target, playList);
-            const emitter = new TypedEvent();
+            const emitter = new EventEmitter();
             slider.addEventListener('click', () => {
                 emitter.trigger('coocoo', {name: '123'});
             });
