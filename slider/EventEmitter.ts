@@ -6,22 +6,28 @@ class EventEmitter {
   }
 
   public trigger<T>(eventName: string, data: T): void {
-    const event = this.events[eventName];
-    if (event) {
-      event.forEach(fn => {
+    if (this.events.hasOwnProperty(eventName)) {
+      this.events[eventName].forEach(fn => {
         fn(data);
       });
     }
   }
   
   public on(eventName: string, fn: void) {
-    if(!this.events[eventName]) {
+    if(!this.events.hasOwnProperty(eventName)) {
       this.events[eventName] = [];
     }
     
     this.events[eventName].push(fn);
-    return () => {
-      this.events[eventName] = this.events[eventName].filter(eventFn => fn !== eventFn);
+  }
+
+  public off(eventName: string, handler: () => void): void {
+    if (eventName && handler) {
+      this.events = this.events[eventName].filter(fn => handler !== fn);
+    } else if (eventName && !handler) {
+      delete this.events[eventName];
+    } else {
+      this.events = {};
     }
   }
 
