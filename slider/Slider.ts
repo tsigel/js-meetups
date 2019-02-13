@@ -3,8 +3,10 @@ class Slider {
   private left: HTMLElement;
   private right: HTMLElement;
   private slideList: Array<HTMLElement>;
+  private previewsList: Array<HTMLElement>;
   private handlers: Array<{ element: HTMLElement; cb: () => void }> = [];
   private target: HTMLElement;
+  private previews: HTMLElement;
   private activeIndex = 0;
   private inProgres: boolean = false;
 
@@ -13,12 +15,15 @@ class Slider {
     left: HTMLElement,
     right: HTMLElement,
     target: HTMLElement,
-    slideContainer: HTMLElement
+    previews: HTMLElement,
+    slideContainer: HTMLElement,
+
   ) {
     this.node = node;
     this.left = left;
     this.right = right;
     this.target = target;
+    this.previews = previews;
     this.slideList = Array.prototype.slice
       .call(slideContainer.childNodes)
       .filter(node => node.nodeType === 1);
@@ -34,8 +39,27 @@ class Slider {
   }
 
   private init() {
+    this.setPreviews();
     this.setHandlers();
     this.setFirstSlide();
+  }
+
+  private setPreviews() {
+    this.slideList.forEach(element => {
+      this.previews.appendChild(element.cloneNode(true));
+    });
+
+    this.previewsList = Array.prototype.slice
+      .call(this.previews.childNodes)
+      .filter(node => node.nodeType === 1);
+
+    this.previewsList.forEach(element => {
+      element.style.width = '30%';
+      element.style.height = '30%';
+      element.style.position = 'relative';
+    });
+
+    this.previewsList[this.activeIndex].style.borderStyle = 'solid';
   }
 
   private setFirstSlide() {
@@ -53,6 +77,29 @@ class Slider {
     });
     this.left.addEventListener("click", this.handlers[0].cb, false);
     this.right.addEventListener("click", this.handlers[1].cb, false);
+
+    for (let index = 0; index < this.previewsList.length; index++) {
+      this.handlers.push({
+        element: this.previewsList[index],
+        cb: () => this.setSlide(index)
+      });
+
+      this.previewsList[index].addEventListener("click", this.handlers[2 + index].cb, false);
+    }
+  }
+
+  private restylePreview(oldIndex: number, newIndex: number) {
+    if (this.inProgres) {
+      return null;
+    }
+
+    this.previewsList[oldIndex].style.borderStyle = null;
+    this.previewsList[newIndex].style.borderStyle = 'solid';
+  }
+
+  private setSlide(newIndex: number) {
+    this.restylePreview(this.activeIndex, newIndex);
+    this.fadeMove(newIndex);
   }
 
   private move(type: "left" | "right") {
@@ -71,6 +118,7 @@ class Slider {
       return null;
     }
 
+    this.restylePreview(this.activeIndex, newIndex);
     this.fadeMove(newIndex);
   }
 
