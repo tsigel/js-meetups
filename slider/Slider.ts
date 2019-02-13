@@ -89,6 +89,10 @@ class Slider {
   }
 
   private restylePreview(oldIndex: number, newIndex: number) {
+    if (this.inProgres) {
+      return null;
+    }
+
     this.previewsList[oldIndex].style.borderStyle = null;
     this.previewsList[newIndex].style.borderStyle = 'solid';
   }
