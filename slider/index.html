@@ -50,6 +50,7 @@
     </head>
     <body>
         <script src="./Slider.js"></script>
+        <script src="./EventEmitter.js"></script>
 
         <div id="slider">
             <div id="left" class="arrow"></div>
@@ -72,6 +73,15 @@
             const slider = document.querySelector('#slider');
             // Как не надо делать!!!
             new Slider(slider, left, right, target, playList);
+            const emitter = new EventEmitter();
+            slider.addEventListener('click', () => {
+                emitter.trigger('coocoo', {name: '123'});
+            });
+
+            emitter.on('coocoo', data => {
+                console.log(data.name);
+            });
+
         </script>
     </body>
 </html>
